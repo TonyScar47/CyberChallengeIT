@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "--- STARTING AUTOMATION --"
+echo "--- STARTING AUTOMATION ---"
 
 #Update package repositories
 sudo pacman -Sy
