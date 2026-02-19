@@ -32,7 +32,8 @@ sudo pacman -S --needed --noconfirm python
 sudo pacman -S --needed --noconfirm python-pip
 sudo pacman -S --needed --noconfirm nmap
 sudo pacman -S --needed --noconfirm fastfetch
-sudo pacman -S --needed --noconfirm  virtualbox-guest-utils
+sudo pacman -S --needed --noconfirm virtualbox-guest-utils
+sudo pacman -S --needed --noconfirm openbsd-netcat
 
 #Python:
 sudo pacman -S --needed --noconfirm  python-requests
