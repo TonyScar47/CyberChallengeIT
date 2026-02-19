@@ -25,6 +25,9 @@ If you encounter issues syncing from VS Code, follow these steps:
 git pull origin main --rebase
 git push origin main
 
+git config --global user.name "IlTuoNome"
+git config --global user.email "tua@email.com"
+
 ```
 
 ## 📂 Repository Structure
