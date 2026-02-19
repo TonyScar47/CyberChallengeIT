@@ -24,17 +24,18 @@ If you encounter issues syncing from VS Code, follow these steps:
 git pull origin main --rebase
 git push origin main
 
-git config --global user.name "IlTuoNome"
-git config --global user.email "tua@email.com"
+git config --global user.name "YourName"
+git config --global user.email "YourEmail@email.com"
 
 ```
 
-## 📂 Repository Structure
+If the script is already present on your VM and you want to apply updates (such as a new command you've added), simply navigate to the directory (cd [...]), grant execution permission (chmod [...]), and run the .sh file
 
-* `/crypto` - Scripts for cryptographic challenges (RSA, AES, XOR).
-* `/pwn` - Exploitation scripts and memory corruption tools.
-* `/web` - Automated scanners and web exploitation payloads.
-* `/rev` - Reverse engineering notes and scripts.
+```bash
+cd CyberChallenge-Tools
+chmod +x setup.sh
+./setup.sh
+```
 
 ---
 
