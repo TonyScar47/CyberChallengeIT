@@ -35,15 +35,28 @@ sudo pacman -S --needed --noconfirm fastfetch
 sudo pacman -S --needed --noconfirm virtualbox-guest-utils
 sudo pacman -S --needed --noconfirm openbsd-netcat
 
-#Python:
-sudo pacman -S --needed --noconfirm  python-requests
+# Python System Packages:
+sudo pacman -S --needed --noconfirm python-requests
+
+# --- NEW: Virtual Environment Setup for CTF Tools ---
+echo "---  Setting up Python Virtual Environment... ---"
+if [ ! -d "venv" ]; then
+    python -m venv venv
+    echo -e "${GREEN}Virtual environment created.${NC}"
+fi
+
+# Install exrex inside the venv (Avoids PEP 668 errors on Arch)
+echo "---  Installing exrex in venv... ---"
+./venv/bin/pip install --upgrade pip
+./venv/bin/pip install exrex
+# ----------------------------------------------------
 
 # 3. Global Git Configuration
-echo "--- ⚙️ Step 3: Configuring Global Git Settings... ---"
+echo "---  Step 3: Configuring Global Git Settings... ---"
 git config --global credential.helper store
 
 # 4. Clean Cache
-echo "--- 🧹 Step 4: Cleaning Package Cache... ---"
+echo "---  Step 4: Cleaning Package Cache... ---"
 sudo pacman -Sc --noconfirm
 
 # 5. Final Success Message
@@ -60,3 +73,7 @@ fastfetch
 echo ""
 echo " VS CODE GIT REMINDER:"
 echo "If sync fails: 'git pull origin main --rebase' then 'git push origin main'"
+echo ""
+echo " PYTHON VENV REMINDER:"
+echo "To use your tools, run: source venv/bin/activate"
+echo "then run: deactivate"
