@@ -49,6 +49,7 @@ fi
 echo "---  Installing exrex in venv... ---"
 ./venv/bin/pip install --upgrade pip
 ./venv/bin/pip install exrex
+./venv/bin/pip install rstr requests
 # ----------------------------------------------------
 
 # 3. Global Git Configuration
