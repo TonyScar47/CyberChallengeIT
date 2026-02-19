@@ -14,8 +14,6 @@ def solve_regex_challenge(regex_pattern):
     
     # Clean the regex by removing common web delimiters /^ and $/ 
     clean_pattern = regex_pattern.strip('/')
-    if clean_pattern.startswith('^'): clean_pattern = clean_pattern[1:]
-    if clean_pattern.endswith('$'): clean_pattern = clean_pattern[:-1]
     
     try:
         # Generate one random string that matches the pattern
@@ -40,4 +38,4 @@ if __name__ == "__main__":
     target_regex = input("Paste the regex pattern: ").strip()
     solve_regex_challenge(target_regex)
 
-# --- ./venv/bin/python Misc06.py ---
+# --- ./venv/bin/python Challenges/Introduction/Misc06.py ---
