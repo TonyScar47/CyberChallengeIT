@@ -32,6 +32,10 @@ sudo pacman -S --needed --noconfirm python
 sudo pacman -S --needed --noconfirm python-pip
 sudo pacman -S --needed --noconfirm nmap
 sudo pacman -S --needed --noconfirm fastfetch
+sudo pacman -S --needed --noconfirm  virtualbox-guest-utils
+
+#Python:
+sudo pacman -S --needed --noconfirm  python-requests
 
 # 3. Global Git Configuration
 echo "--- ⚙️ Step 3: Configuring Global Git Settings... ---"
