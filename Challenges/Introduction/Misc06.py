@@ -39,3 +39,5 @@ if __name__ == "__main__":
     
     target_regex = input("Paste the regex pattern: ").strip()
     solve_regex_challenge(target_regex)
+
+# --- ./venv/bin/python Misc06.py ---
