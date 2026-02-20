@@ -36,6 +36,8 @@ sudo pacman -S --needed --noconfirm virtualbox-guest-utils
 sudo pacman -S --needed --noconfirm openbsd-netcat
 sudo pacman -S --needed --noconfirm bind
 
+sudo pacman -S --needed --noconfirm docker
+
 # Python System Packages:
 sudo pacman -S --needed --noconfirm python-requests
 

@@ -27,6 +27,8 @@ git push origin main
 git config --global user.name "YourName"
 git config --global user.email "YourEmail@email.com"
 
+sudo systemctl start docker.service
+
 ```
 
 If the script is already present on your VM and you want to apply updates (such as a new command you've added), simply navigate to the directory (cd [...]), grant execution permission (chmod [...]), and run the .sh file
