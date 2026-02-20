@@ -8,7 +8,7 @@ This repository is optimized for **Arch Linux**. I use a custom automation scrip
 ### 🚀 Quick Start
 To set up the environment on a new machine, simply run:
 ```bash
-curl -s https://raw.githubusercontent.com/BadBoyEn/CyberChallenge-Tools/main/setup.sh | sudo bash
+curl -s https://raw.githubusercontent.com/BadBoyEn/CyberChallenge-Tools/setup.sh | sudo bash
 
 ```
 ---
