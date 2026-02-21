@@ -1,0 +1,1 @@
+strings nw-intro01.pcap ~ grep "flag"

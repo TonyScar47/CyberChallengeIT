@@ -36,6 +36,8 @@ sudo pacman -S --needed --noconfirm virtualbox-guest-utils
 sudo pacman -S --needed --noconfirm openbsd-netcat
 sudo pacman -S --needed --noconfirm bind
 
+echo "1" | sudo pacman -S --needed --noconfirm wireshark-qt nmap && sudo usermod -aG wireshark $USER
+
 sudo pacman -S --needed --noconfirm docker-compose
 
 # Python System Packages:
