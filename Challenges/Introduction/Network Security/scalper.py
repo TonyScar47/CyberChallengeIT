@@ -2,85 +2,90 @@ import sys
 import os
 import re
 import gzip
+import subprocess
 from scapy.all import *
 
-# Disabilita i log fastidiosi
 conf.verb = 0
 
-def scalper_scan(pcap_file):
+def scalper_scan(pcap_file, keylog_file=None):
     print(f"\n" + "="*60)
-    print(f"[*] SCALPER V5: Ultimate CTF Swiss Army Knife - {pcap_file}")
+    print(f"[*] SCALPER V6: TLS Decryptor Edition - {pcap_file}")
     print("="*60)
 
+    universal_flag_pattern = re.compile(r'[a-zA-Z0-9_]+\{.*?\}')
+
+    # --- NEW: CHALLENGE 09 - DECIFRATURA TLS CON TSHARK ---
+    if keylog_file and os.path.exists(keylog_file):
+        print(f"[🔐] File chiavi TLS rilevato ({keylog_file}). Inizio decifratura profonda...")
+        try:
+            # Chiamiamo TShark chiedendogli di decifrare il traffico e stampare tutto in chiaro
+            cmd = [
+                'tshark', 
+                '-r', pcap_file, 
+                '-o', f'tls.keylog_file:{keylog_file}', 
+                '-V' # Verbose: stampa tutto il contenuto decifrato
+            ]
+            
+            # Eseguiamo il comando e catturiamo l'output
+            result = subprocess.run(cmd, capture_output=True, text=True, errors='ignore')
+            decrypted_text = result.stdout
+
+            # Cerchiamo la flag in tutto il testo decifrato
+            hidden_flags = universal_flag_pattern.findall(decrypted_text)
+            if hidden_flags:
+                print(f"\n[🎯] TRAFFICO DECIFRATO! TROVATE POSSIBILI FLAG:")
+                for f in set(hidden_flags):
+                    if len(f) > 7:
+                        print(f"[✅] FLAG ESTRATTA DAL TLS: {f}")
+                return # Se troviamo la flag nel traffico decifrato, fermiamo lo script
+            else:
+                print("[!] Decifratura completata ma nessuna flag trovata.")
+
+        except FileNotFoundError:
+            print("[!] ERRORE: TShark non è installato. Usa 'sudo pacman -S wireshark-cli'")
+            return
+        except Exception as e:
+            print(f"[!] Errore durante la decifratura: {e}")
+
+    # --- RESTO DELLO SCRIPT (Per le sfide dalla 01 alla 08) ---
+    print("\n[*] Avvio scansione pacchetti standard (Scapy)...")
     try:
         packets = rdpcap(pcap_file)
     except Exception as e:
-        print(f"[!] Errore nel caricamento: {e}")
+        print(f"[!] Errore caricamento Scapy: {e}")
         return
 
-    universal_flag_pattern = re.compile(r'[a-zA-Z0-9_]+\{.*?\}')
-    target_string_06 = "Pwn all the things!!!"
-
     for i, pkt in enumerate(packets):
-        
-        # Estraggo i dati binari grezzi del pacchetto
         raw_bytes = bytes(pkt)
         raw_text = raw_bytes.decode('ascii', errors='ignore')
 
-        # --- NEW: CHALLENGE 08 - ESTRAZIONE FILE COMPRESSI (GZIP/TAR) ---
-        # Gzip inizia sempre con i byte magici 1f 8b 08
+        # Controllo Gzip (Sfida 08)
         if b'\x1f\x8b\x08' in raw_bytes:
-            # Trova dove inizia il file compresso
             idx = raw_bytes.find(b'\x1f\x8b\x08')
-            gz_data = raw_bytes[idx:]
             try:
-                # Decomprime al volo
-                decompressed = gzip.decompress(gz_data)
-                dec_text = decompressed.decode('ascii', errors='ignore')
-                
-                print(f"\n[📦] FILE COMPRESSO TROVATO E DECOMPRESSO NEL PACCHETTO #{i+1}")
-                # Cerca la flag nel file decompresso
-                hidden_flags = universal_flag_pattern.findall(dec_text)
-                for hf in hidden_flags:
-                    print(f"[✅] FLAG NASCOSTA NEL FILE COMPRESSO: {hf}")
-            except Exception as e:
-                pass # Se non è un gzip valido, ignora
+                dec_text = gzip.decompress(raw_bytes[idx:]).decode('ascii', errors='ignore')
+                for hf in universal_flag_pattern.findall(dec_text):
+                    print(f"[✅] FLAG GZIP (Pkt #{i+1}): {hf}")
+            except: pass
 
-        # --- CHALLENGE 06 ---
-        if target_string_06 in raw_text:
-            print(f"\n[🎯] TROVATA LA FRASE TARGET (Pacchetto #{i+1})")
-            if pkt.haslayer(IP):
-                print(f"[>] IP da usare per la flag: {pkt[IP].src}")
-            # Cerca flag vicine
-            flags_near = universal_flag_pattern.findall(raw_text)
-            for f in flags_near:
-                print(f"[+] FLAG: {f}")
+        # Ricerca standard
+        for f in universal_flag_pattern.findall(raw_text):
+            if len(f) > 7: print(f"[+] POSSIBILE FLAG (Pkt #{i+1}): {f}")
 
-        # --- RICERCA FLAG GLOBALE (Challenge 01, 03, ecc.) ---
-        found_flags = universal_flag_pattern.findall(raw_text)
-        for f in found_flags:
-            if len(f) > 7:
-                print(f"[+] [Pkt #{i+1}] Possibile Flag: {f}")
-
-        # --- CHALLENGE 05: COMMENTI ---
+        # Commenti (Sfida 05)
         if hasattr(pkt, 'comment') and pkt.comment:
-            comment_text = pkt.comment.decode(errors='ignore') if isinstance(pkt.comment, bytes) else pkt.comment
-            print(f"[!!!] COMMENTO (Pkt #{i+1}): {comment_text}")
-
-        # --- CHALLENGE 04: DNS ---
-        if pkt.haslayer(DNSQR):
-            query_name = pkt[DNSQR].qname.decode(errors='ignore')
-            if pkt.haslayer(IP) and pkt[IP].src == "192.168.100.3":
-                print(f"[DNS] Query da Target: {query_name}")
-
-        # --- CHALLENGE 02: METADATI FRAME 4 ---
-        if i == 3 and pkt.haslayer(Ether):
-            src_mac = pkt[Ether].src
-            tcp_len = len(pkt[TCP].payload) if pkt.haslayer(TCP) else 0
-            print(f"[*] [PKT 4] Hint Challenge 02 -> MAC: {src_mac} | TCP Len: {tcp_len}")
+            print(f"[!!!] COMMENTO (Pkt #{i+1}): {pkt.comment.decode(errors='ignore') if isinstance(pkt.comment, bytes) else pkt.comment}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python scalper.py <file.pcapng>")
+        print("Uso standard: python scalper.py <file.pcapng>")
+        print("Uso con TLS : python scalper.py <file.pcapng> <tls-keys.txt>")
     else:
-        scalper_scan(sys.argv[1])
+        pcap = sys.argv[1]
+        keys = sys.argv[2] if len(sys.argv) > 2 else None
+        
+        # Auto-detect file chiavi se l'utente si dimentica di passarlo
+        if not keys and os.path.exists("tls-keys.txt"):
+            keys = "tls-keys.txt"
+            
+        scalper_scan(pcap, keys)
