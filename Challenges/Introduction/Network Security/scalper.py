@@ -1,79 +1,57 @@
 import sys
 import os
 import re
-import binascii
 from scapy.all import *
 
-# Disabilita i messaggi di log non necessari di Scapy
+# Disabilita i messaggi di log di Scapy per un output pulito
 conf.verb = 0
 
-def check_base64(string):
-    """Tenta di decodificare possibili flag in Base64"""
-    try:
-        # Cerca pattern che sembrano base64 (almeno 10 caratteri)
-        potential = re.findall(r'[A-Za-z0-9+/]{10,}={0,2}', string)
-        for p in potential:
-            decoded = binascii.a2b_base64(p).decode('utf-8', errors='ignore')
-            if "flag{" in decoded:
-                return f"[FOUND B64] {decoded}"
-    except:
-        pass
-    return None
-
-def beast_mode_resolver(pcap_file):
-    print(f"\n" + "="*50)
-    print(f"[*] ATTACK MODE ON: Analizzando {pcap_file}")
-    print("="*50)
+def scalper_scan(pcap_file):
+    print(f"\n" + "="*60)
+    print(f"[*] SCALPER V2: Analisi Omnicomprensiva di {pcap_file}")
+    print("="*60)
 
     try:
+        # Leggiamo i pacchetti
         packets = rdpcap(pcap_file)
     except Exception as e:
         print(f"[!] Errore nel caricamento del file: {e}")
         return
 
     flag_pattern = re.compile(r'flag\{.*?\}')
-    
+
     for i, pkt in enumerate(packets):
-        # 1. Estrazione dati grezzi dal pacchetto
-        # Proviamo a dumpare tutto il contenuto in formato stringa
-        raw_content = str(pkt.show(dump=True))
-        
-        # 2. Ricerca Flag in chiaro (Regex)
-        flags = flag_pattern.findall(raw_content)
-        for f in flags:
-            print(f"[+] [PKT {i+1}] FLAG TROVATA: {f}")
+        # --- 1. CHALLENGE 05: COMMENTI ---
+        # Cerchiamo nei metadati del pacchetto (pcapng)
+        if hasattr(pkt, 'comment') and pkt.comment:
+            comment_text = pkt.comment.decode(errors='ignore') if isinstance(pkt.comment, bytes) else pkt.comment
+            print(f"[!!!] FLAG/INFO TROVATA NEI COMMENTI (Pkt #{i+1}): {comment_text}")
 
-        # 3. Analisi Payload Raw (per Base64 e DNS)
-        if pkt.haslayer(Raw):
-            payload = pkt[Raw].load.decode(errors='ignore')
-            
-            # Controllo Base64
-            b64_res = check_base64(payload)
-            if b64_res:
-                print(f"[+] [PKT {i+1}] {b64_res}")
-
-        # 4. Caso speciale: DNS (Data Exfiltration)
+        # --- 2. CHALLENGE 04: FILTRI DNS & IP ---
         if pkt.haslayer(DNSQR):
-            query = pkt[DNSQR].qname.decode()
-            if "flag" in query:
-                print(f"[!] [DNS] Query sospetta rilevata: {query}")
+            query_name = pkt[DNSQR].qname.decode()
+            # Se la richiesta viene dall'IP specifico della sfida
+            if pkt.haslayer(IP) and pkt[IP].src == "192.168.100.3":
+                print(f"[DNS] Richiesta da 192.168.100.3: {query_name}")
+            elif "flag" in query_name.lower():
+                print(f"[DNS] Query sospetta trovata: {query_name}")
 
-        # 5. Logica specifica per metadati (come Challenge 02)
-        # Se non troviamo flag nel testo, proviamo a ricostruire il formato MAC/LEN
-        if i == 3 and not flags: # Controllo il frame 4
-            if pkt.haslayer(Ether) and pkt.haslayer(TCP):
+        # --- 3. CHALLENGE 01/03: RICERCA TESTUALE ---
+        # Converte il pacchetto in stringa per trovare flag{...}
+        raw_pkt = str(pkt.show(dump=True))
+        found_flags = flag_pattern.findall(raw_pkt)
+        for f in found_flags:
+            print(f"[+] [Pkt #{i+1}] FLAG TROVATA NEL TESTO: {f}")
+
+        # --- 4. CHALLENGE 02: METADATI FRAME 4 ---
+        if i == 3: # Frame 4
+            if pkt.haslayer(Ether):
                 src_mac = pkt[Ether].src
-                tcp_len = len(pkt[TCP].payload)
-                print(f"[*] [HINT] Possibile flag formato metadati: flag{{{src_mac}/{tcp_len}}}")
+                tcp_len = len(pkt[TCP].payload) if pkt.haslayer(TCP) else 0
+                print(f"[*] [PKT 4] MAC: {src_mac} | TCP Len: {tcp_len}")
 
 if __name__ == "__main__":
-    # Controlla se l'utente ha passato il file da terminale
     if len(sys.argv) < 2:
-        print("\n[!] Errore: Nessun file specificato.")
-        print("Uso corretto: python cyber_solver.py nome_sfida.pcapng")
+        print("Uso: python scalper.py <file.pcapng>")
     else:
-        file_path = sys.argv[1]
-        if os.path.exists(file_path):
-            beast_mode_resolver(file_path)
-        else:
-            print(f"[!] Errore: Il file '{file_path}' non esiste nella cartella corrente.")
+        scalper_scan(sys.argv[1])
