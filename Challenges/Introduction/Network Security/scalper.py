@@ -1,13 +1,15 @@
 import sys
 import os
 import re
+import gzip
 from scapy.all import *
 
+# Disabilita i log fastidiosi
 conf.verb = 0
 
 def scalper_scan(pcap_file):
     print(f"\n" + "="*60)
-    print(f"[*] SCALPER V4: Ultimate Strings Extractor - {pcap_file}")
+    print(f"[*] SCALPER V5: Ultimate CTF Swiss Army Knife - {pcap_file}")
     print("="*60)
 
     try:
@@ -16,31 +18,47 @@ def scalper_scan(pcap_file):
         print(f"[!] Errore nel caricamento: {e}")
         return
 
-    # REGEX UNIVERSALE: Cerca qualsiasi parola seguita da { ... } 
-    # (Esempio: CCIT{flag_qui}, flag{123}, test{abc})
     universal_flag_pattern = re.compile(r'[a-zA-Z0-9_]+\{.*?\}')
-    target_string = "Pwn all the things!!!"
+    target_string_06 = "Pwn all the things!!!"
 
     for i, pkt in enumerate(packets):
         
-        # --- ESTRAZIONE "STRINGS-LIKE" ---
-        # Prendiamo l'intero pacchetto grezzo e forziamo la decodifica in testo
-        # Questo aggira qualsiasi troncamento fatto da Scapy!
-        raw_text = bytes(pkt).decode('ascii', errors='ignore')
+        # Estraggo i dati binari grezzi del pacchetto
+        raw_bytes = bytes(pkt)
+        raw_text = raw_bytes.decode('ascii', errors='ignore')
+
+        # --- NEW: CHALLENGE 08 - ESTRAZIONE FILE COMPRESSI (GZIP/TAR) ---
+        # Gzip inizia sempre con i byte magici 1f 8b 08
+        if b'\x1f\x8b\x08' in raw_bytes:
+            # Trova dove inizia il file compresso
+            idx = raw_bytes.find(b'\x1f\x8b\x08')
+            gz_data = raw_bytes[idx:]
+            try:
+                # Decomprime al volo
+                decompressed = gzip.decompress(gz_data)
+                dec_text = decompressed.decode('ascii', errors='ignore')
+                
+                print(f"\n[📦] FILE COMPRESSO TROVATO E DECOMPRESSO NEL PACCHETTO #{i+1}")
+                # Cerca la flag nel file decompresso
+                hidden_flags = universal_flag_pattern.findall(dec_text)
+                for hf in hidden_flags:
+                    print(f"[✅] FLAG NASCOSTA NEL FILE COMPRESSO: {hf}")
+            except Exception as e:
+                pass # Se non è un gzip valido, ignora
 
         # --- CHALLENGE 06 ---
-        if target_string in raw_text:
+        if target_string_06 in raw_text:
             print(f"\n[🎯] TROVATA LA FRASE TARGET (Pacchetto #{i+1})")
-            # Cerchiamo la flag esattamente dentro questo pacchetto grezzo
+            if pkt.haslayer(IP):
+                print(f"[>] IP da usare per la flag: {pkt[IP].src}")
+            # Cerca flag vicine
             flags_near = universal_flag_pattern.findall(raw_text)
             for f in flags_near:
-                print(f"[✅] FLAG ESTRATTA: {f}")
+                print(f"[+] FLAG: {f}")
 
-        # --- RICERCA FLAG GLOBALE ---
-        # Cerchiamo possibili flag in tutto il traffico
+        # --- RICERCA FLAG GLOBALE (Challenge 01, 03, ecc.) ---
         found_flags = universal_flag_pattern.findall(raw_text)
         for f in found_flags:
-            # Filtriamo falsi positivi troppo corti (es. if{1})
             if len(f) > 7:
                 print(f"[+] [Pkt #{i+1}] Possibile Flag: {f}")
 
@@ -54,6 +72,12 @@ def scalper_scan(pcap_file):
             query_name = pkt[DNSQR].qname.decode(errors='ignore')
             if pkt.haslayer(IP) and pkt[IP].src == "192.168.100.3":
                 print(f"[DNS] Query da Target: {query_name}")
+
+        # --- CHALLENGE 02: METADATI FRAME 4 ---
+        if i == 3 and pkt.haslayer(Ether):
+            src_mac = pkt[Ether].src
+            tcp_len = len(pkt[TCP].payload) if pkt.haslayer(TCP) else 0
+            print(f"[*] [PKT 4] Hint Challenge 02 -> MAC: {src_mac} | TCP Len: {tcp_len}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
