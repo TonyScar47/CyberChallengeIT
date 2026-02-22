@@ -39,6 +39,7 @@ sudo pacman -S --needed --noconfirm bind
 echo "1" | sudo pacman -S --needed --noconfirm wireshark-qt nmap && sudo usermod -aG wireshark $USER && sudo wireshark-cli
 
 sudo pacman -S --needed --noconfirm docker-compose
+sudo pacman -S --needed --noconfirm binwalk
 
 # Python System Packages:
 sudo pacman -S --needed --noconfirm python-requests
