@@ -3,58 +3,57 @@ import os
 import re
 from scapy.all import *
 
-# Disabilita i messaggi di log di Scapy per un output pulito
 conf.verb = 0
 
 def scalper_scan(pcap_file):
     print(f"\n" + "="*60)
-    print(f"[*] SCALPER V3.2: CyberChallenge Solver - {pcap_file}")
+    print(f"[*] SCALPER V4: Ultimate Strings Extractor - {pcap_file}")
     print("="*60)
 
     try:
-        # Caricamento pacchetti
         packets = rdpcap(pcap_file)
     except Exception as e:
-        print(f"[!] Errore nel caricamento del file: {e}")
+        print(f"[!] Errore nel caricamento: {e}")
         return
 
-    flag_pattern = re.compile(r'flag\{.*?\}')
+    # REGEX UNIVERSALE: Cerca qualsiasi parola seguita da { ... } 
+    # (Esempio: CCIT{flag_qui}, flag{123}, test{abc})
+    universal_flag_pattern = re.compile(r'[a-zA-Z0-9_]+\{.*?\}')
     target_string = "Pwn all the things!!!"
 
     for i, pkt in enumerate(packets):
-        # --- CHALLENGE 05: COMMENTI (Filtri 3) ---
+        
+        # --- ESTRAZIONE "STRINGS-LIKE" ---
+        # Prendiamo l'intero pacchetto grezzo e forziamo la decodifica in testo
+        # Questo aggira qualsiasi troncamento fatto da Scapy!
+        raw_text = bytes(pkt).decode('ascii', errors='ignore')
+
+        # --- CHALLENGE 06 ---
+        if target_string in raw_text:
+            print(f"\n[🎯] TROVATA LA FRASE TARGET (Pacchetto #{i+1})")
+            # Cerchiamo la flag esattamente dentro questo pacchetto grezzo
+            flags_near = universal_flag_pattern.findall(raw_text)
+            for f in flags_near:
+                print(f"[✅] FLAG ESTRATTA: {f}")
+
+        # --- RICERCA FLAG GLOBALE ---
+        # Cerchiamo possibili flag in tutto il traffico
+        found_flags = universal_flag_pattern.findall(raw_text)
+        for f in found_flags:
+            # Filtriamo falsi positivi troppo corti (es. if{1})
+            if len(f) > 7:
+                print(f"[+] [Pkt #{i+1}] Possibile Flag: {f}")
+
+        # --- CHALLENGE 05: COMMENTI ---
         if hasattr(pkt, 'comment') and pkt.comment:
             comment_text = pkt.comment.decode(errors='ignore') if isinstance(pkt.comment, bytes) else pkt.comment
             print(f"[!!!] COMMENTO (Pkt #{i+1}): {comment_text}")
 
-        # --- CHALLENGE 04: DNS (Filtri 2) ---
+        # --- CHALLENGE 04: DNS ---
         if pkt.haslayer(DNSQR):
-            query_name = pkt[DNSQR].qname.decode()
+            query_name = pkt[DNSQR].qname.decode(errors='ignore')
             if pkt.haslayer(IP) and pkt[IP].src == "192.168.100.3":
-                print(f"[DNS] Query da 192.168.100.3: {query_name}")
-
-        # --- CHALLENGE 06: RICERCA STRINGA E IP (Filtri 4) ---
-        # Cerchiamo la stringa "Pwn all the things!!!" nel pacchetto
-        if target_string.encode() in bytes(pkt):
-            print(f"\n[🎯] TARGET INDIVIDUATO (Pkt #{i+1})")
-            if pkt.haslayer(IP):
-                src_ip = pkt[IP].src
-                dst_ip = pkt[IP].dst
-                print(f"[>] Mittente (Source IP): {src_ip}")
-                print(f"[>] Destinatario (Dest IP): {dst_ip}")
-                print(f"[✅] PROVA QUESTA FLAG: flag{{{src_ip}}}")
-
-        # --- RICERCA FLAG STANDARD (Regex) ---
-        raw_pkt_str = str(pkt.show(dump=True))
-        found_flags = flag_pattern.findall(raw_pkt_str)
-        for f in found_flags:
-            print(f"[+] [Pkt #{i+1}] FLAG TROVATA: {f}")
-
-        # --- CHALLENGE 02: METADATI FRAME 4 ---
-        if i == 3 and pkt.haslayer(Ether):
-            src_mac = pkt[Ether].src
-            tcp_len = len(pkt[TCP].payload) if pkt.haslayer(TCP) else 0
-            print(f"[*] [PKT 4] MAC: {src_mac} | TCP Len: {tcp_len}")
+                print(f"[DNS] Query da Target: {query_name}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
