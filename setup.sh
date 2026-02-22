@@ -42,6 +42,7 @@ sudo pacman -S --needed --noconfirm docker-compose
 
 # Python System Packages:
 sudo pacman -S --needed --noconfirm python-requests
+sudo pacman -S --needed --noconfirm python-scapy
 
 # --- NEW: Virtual Environment Setup for CTF Tools ---
 echo "---  Setting up Python Virtual Environment... ---"
