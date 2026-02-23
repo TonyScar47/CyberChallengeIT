@@ -39,6 +39,15 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
+
+Shortcut for gnu readline: [da tradurre]
+-> Inizio comando, ctrl + a
+-> fine comando, ctrl + e
+-> Elimino ciò che sta post il cursore, ctrl + k
+-> Elimina la prola precedente, ctrl + w
+-> Pulire il terminale, digitare "clear" oppure ctrl + l
+-> ctrl + r
+
 ---
 
 *Developed with ❤️ by **BadBoyEn***

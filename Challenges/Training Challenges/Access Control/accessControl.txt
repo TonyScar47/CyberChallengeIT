@@ -98,5 +98,9 @@ When importing the provided ISO into your Virtual Machine manager (e.g., Virtual
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 7) AC_1.07 - TOCTOU (Time-of-Check to Time-of-Use)
+Use file python.
+
+[DA TRADURRE IN INGLESE:
+Per questa challenge usa il file "exploit.py" scrivendo da terminale "chmod +x exploit.py" per renderlo eseguibile e poi "./exploit.py"]
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
