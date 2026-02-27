@@ -5,15 +5,25 @@
 # ------------------------------------------------------------------------------
 # IDEMPOTENT SCRIPT: Safe to run multiple times.
 # STRICT MODE: The script will abort immediately if any command fails.
+# 
+# HOW TO CHECK INSTALLED PACKAGES (Example):
+# pacman -Q man-db man-pages : This command checks if the specified packages 
+#                              are already installed on your local system. You 
+#                              can use this format to verify the status of any 
+#                              package and install it manually if it is missing.
 # ==============================================================================
-
-# Stop script on error (Safety First!)
-set -e
 
 # Define Colors for output
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
+
+# Error handling function (Triggered on failure)
+# This will print a red warning if any command breaks the script.
+trap 'echo -e "\n${RED}[!] CRITICAL ERROR: Automation aborted. Something broke! Check the logs above.${NC}\n"' ERR
+
+# Stop script on error (Safety First!)
+set -e
 
 echo "---  STARTING AUTOMATION: IDEMPOTENT SETUP ---"
 
@@ -33,10 +43,30 @@ echo "[*] Installing Base & Dev tools..."
 sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose
 
 # --- WEB SECURITY ---
-# ffuf: Fast web fuzzer for directory discovery
 # sqlmap: Automatic SQL injection and database takeover tool
-echo "[*] Installing Web Security tools..."
-sudo pacman -S --needed --noconfirm ffuf sqlmap
+echo "[*] Installing Web Security tools (Official Repos)..."
+sudo pacman -S --needed --noconfirm sqlmap
+
+# --- AUR PACKAGES (ffuf) ---
+# ffuf: Fast web fuzzer for directory discovery (Installed via AUR)
+echo "[*] Installing Web Security tools (AUR - ffuf)..."
+if ! command -v ffuf &> /dev/null; then
+    echo "    Cloning and building ffuf from AUR..."
+    ORIGINAL_DIR=$(pwd)
+    BUILD_DIR=$(mktemp -d)
+    cd "$BUILD_DIR"
+    
+    git clone https://aur.archlinux.org/ffuf-bin.git
+    cd ffuf-bin
+    
+    makepkg -si --noconfirm
+    
+    cd "$ORIGINAL_DIR"
+    rm -rf "$BUILD_DIR"
+    echo -e "${GREEN}    ffuf installed successfully.${NC}"
+else
+    echo -e "${GREEN}    ffuf is already installed. Skipping.${NC}"
+fi
 
 # --- NETWORK SECURITY ---
 # nmap: Network exploration tool and security / port scanner
@@ -100,7 +130,6 @@ if [ ! -d "venv" ]; then
 fi
 
 # Install python modules inside the venv
-# Added 'pwntools' (Software Sec) and 'pycryptodome' (Cryptography)
 echo "---  Installing Python tools in venv... ---"
 ./venv/bin/pip install --upgrade pip
 ./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome
