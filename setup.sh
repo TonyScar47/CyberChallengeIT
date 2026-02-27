@@ -21,21 +21,22 @@ echo "---  STARTING AUTOMATION: IDEMPOTENT SETUP ---"
 echo "---  Step 1: Updating System (Safe Update)... ---"
 sudo pacman -Syu --noconfirm
 
+# 1.5. Core Documentation (Guaranteed Installation)
+echo "---  Step 1.5: Installing Core Documentation (man pages)... ---"
+sudo pacman -S --needed --noconfirm man-db man-pages
+
 # 2. Install Tools by CyberChallenge Macro-Categories
 echo "---  Step 2: Installing Tools by CTF Categories... ---"
 
 # --- BASE SYSTEM & DEV ---
-SYS_BASE=(
-    git base-devel code python python-pip fastfetch 
-    virtualbox-guest-utils docker-compose man-db man-pages
-)
+echo "[*] Installing Base & Dev tools..."
+sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose
 
 # --- WEB SECURITY ---
 # ffuf: Fast web fuzzer for directory discovery
 # sqlmap: Automatic SQL injection and database takeover tool
-WEB_SEC=(
-    ffuf sqlmap
-)
+echo "[*] Installing Web Security tools..."
+sudo pacman -S --needed --noconfirm ffuf sqlmap
 
 # --- NETWORK SECURITY ---
 # nmap: Network exploration tool and security / port scanner
@@ -43,47 +44,36 @@ WEB_SEC=(
 # tcpdump: Command-line packet analyzer
 # bind: DNS utilities (contains 'dig' and 'host')
 # openbsd-netcat: The "Swiss army knife" for networking (nc)
-NET_SEC=(
-    nmap wireshark-qt tcpdump bind openbsd-netcat
-)
+echo "[*] Installing Network Security tools..."
+sudo pacman -S --needed --noconfirm nmap wireshark-qt tcpdump bind openbsd-netcat
 
 # --- CRYPTOGRAPHY ---
 # john: John the Ripper (password cracker)
 # hashcat: Advanced password recovery utility
-CRYPTO=(
-    john hashcat
-)
+echo "[*] Installing Cryptography tools..."
+sudo pacman -S --needed --noconfirm john hashcat
 
 # --- SOFTWARE SECURITY (Pwn & Reverse Engineering) ---
 # gdb: The GNU Debugger (essential for Binary Exploitation)
 # strace / ltrace: Trace system calls and library calls
 # radare2: Advanced command-line reverse engineering framework
 # binwalk: Tool for searching binary images for embedded files/signatures
-SOFT_SEC=(
-    gdb strace ltrace radare2 binwalk
-)
+echo "[*] Installing Software Security tools..."
+sudo pacman -S --needed --noconfirm gdb strace ltrace radare2 binwalk
 
 # --- HARDWARE SECURITY ---
 # minicom: Serial communication program (used to interface with hardware via UART)
 # flashrom: Utility for reading/writing/verifying flash ROM chips
-HW_SEC=(
-    minicom flashrom
-)
+echo "[*] Installing Hardware Security tools..."
+sudo pacman -S --needed --noconfirm minicom flashrom
 
 # --- CRYPTOGRAPHY PROTOCOLS ---
 # Usually analyzed theoretically or via custom Python scripts (pycryptodome).
 # Left empty for future custom additions. 
-# Uncomment the array and add to pacman command below when needed.
-# CRYPTO_PROTO=( )
-
-
-# Install all populated categories in a single transaction
-sudo pacman -S --needed --noconfirm \
-    "${SYS_BASE[@]}" "${WEB_SEC[@]}" "${NET_SEC[@]}" \
-    "${CRYPTO[@]}" "${SOFT_SEC[@]}" "${HW_SEC[@]}"
 
 # Setup Wireshark permissions
 # Add user to wireshark group to allow packet capturing without root
+echo "---  Configuring Wireshark Permissions... ---"
 sudo usermod -aG wireshark $USER
 
 # --- Man page color configuration ---
