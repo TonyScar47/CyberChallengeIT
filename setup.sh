@@ -47,7 +47,7 @@ echo "---  Step 2: Installing Tools by CTF Categories... ---"
 
 # --- BASE SYSTEM & DEV ---
 echo "[*] Installing Base & Dev tools..."
-sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose
+sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose cmake
 
 # --- WEB SECURITY ---
 # sqlmap: Automatic SQL injection and database takeover tool
