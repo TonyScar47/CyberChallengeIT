@@ -18,9 +18,16 @@ GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# --- LOGGING SETUP ---
+LOG_FILE="setup_error.log"
+# Clear the log file if it exists from a previous run
+> "$LOG_FILE"
+# Redirect all output (stdout and stderr) to both the terminal and the log file
+exec > >(tee -a "$LOG_FILE") 2>&1
+
 # Error handling function (Triggered on failure)
-# This will print a red warning if any command breaks the script.
-trap 'echo -e "\n${RED}[!] CRITICAL ERROR: Automation aborted. Something broke! Check the logs above.${NC}\n"' ERR
+# This will print a red warning and leave the log file intact for debugging.
+trap 'echo -e "\n${RED}[!] CRITICAL ERROR: Automation aborted. Something broke! Check the log file: ${LOG_FILE}${NC}\n"' ERR
 
 # Stop script on error (Safety First!)
 set -e
@@ -141,6 +148,13 @@ git config --global credential.helper store
 # 5. Clean Cache
 echo "---  Step 5: Cleaning Package Cache... ---"
 sudo pacman -Sc --noconfirm
+
+# ==============================================================================
+# --- CLEANUP ON SUCCESS ---
+# If the script successfully reaches this line, it means no errors occurred.
+# We delete the log file to keep the workspace clean.
+rm -f "$LOG_FILE"
+# ==============================================================================
 
 # 6. Final Success Message
 echo ""
