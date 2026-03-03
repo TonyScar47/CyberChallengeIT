@@ -65,3 +65,12 @@ curl normalmente non invierebbero, o che vuoi modificare manualmente]
  rigorosamente i doppi apici per le chiavi e per le stringhe]
 
 10)Web 10 - HTTP: il metodo OPTIONS
+-> curl -I -X OPTIONS indirizzoWeb
+-> curl -I -X PUT indirizzoWeb
+
+[Vedi cosa ti esce, se sta un metodo strano a posto di option scrivi quel metodo. Altrimenti:
+ prova sia con PUT sia con PATCH a posto di options. PUO' ESSERE CJE SE FACESSO OPTIONS NON MI
+ USCIREBBE IL METODO PUT O PATCH, TU FORZA LO STESSO. SCRIVI VEDI CHE SUCCEDE.]
+
+ 11)Web 11 - HTTP: i token CSRF
+ 
