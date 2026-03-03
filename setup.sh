@@ -51,8 +51,11 @@ sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfe
 
 # --- WEB SECURITY ---
 # sqlmap: Automatic SQL injection and database takeover tool
+# seclists: Essential collection of multiple types of lists used during security assessments
+# jq: Lightweight and flexible command-line JSON processor (crucial for bash automation)
+# burpsuite: Integrated platform for performing security testing of web applications
 echo "[*] Installing Web Security tools (Official Repos)..."
-sudo pacman -S --needed --noconfirm sqlmap
+sudo pacman -S --needed --noconfirm sqlmap seclists jq burpsuite
 
 # --- AUR PACKAGES (ffuf) ---
 # ffuf: Fast web fuzzer for directory discovery (Installed via AUR)
@@ -137,9 +140,10 @@ if [ ! -d "venv" ]; then
 fi
 
 # Install python modules inside the venv
+# Added arjun (HTTP parameter discovery) and dirsearch (Web path scanner)
 echo "---  Installing Python tools in venv... ---"
 ./venv/bin/pip install --upgrade pip
-./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome
+./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome arjun dirsearch
 
 # 4. Global Git Configuration
 echo "---  Step 4: Configuring Global Git Settings... ---"
@@ -169,5 +173,5 @@ fastfetch
 
 echo ""
 echo " PYTHON VENV REMINDER:"
-echo "To use your tools (like pwntools), run: source venv/bin/activate"
+echo "To use your tools (like pwntools, arjun, dirsearch), run: source venv/bin/activate"
 echo "then run: deactivate"
