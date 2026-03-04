@@ -5,12 +5,6 @@
 # ------------------------------------------------------------------------------
 # IDEMPOTENT SCRIPT: Safe to run multiple times.
 # STRICT MODE: The script will abort immediately if any command fails.
-# 
-# HOW TO CHECK INSTALLED PACKAGES (Example):
-# pacman -Q man-db man-pages : This command checks if the specified packages 
-#                              are already installed on your local system. You 
-#                              can use this format to verify the status of any 
-#                              package and install it manually if it is missing.
 # ==============================================================================
 
 # Define Colors for output
@@ -20,23 +14,21 @@ NC='\033[0m' # No Color
 
 # --- LOGGING SETUP ---
 LOG_FILE="setup_error.log"
-# Clear the log file if it exists from a previous run
 > "$LOG_FILE"
-# Redirect all output (stdout and stderr) to both the terminal and the log file
 exec > >(tee -a "$LOG_FILE") 2>&1
 
-# Error handling function (Triggered on failure)
-# This will print a red warning and leave the log file intact for debugging.
 trap 'echo -e "\n${RED}[!] CRITICAL ERROR: Automation aborted. Something broke! Check the log file: ${LOG_FILE}${NC}\n"' ERR
 
-# Stop script on error (Safety First!)
 set -e
 
 echo "---  STARTING AUTOMATION: IDEMPOTENT SETUP ---"
 
-# 1. System Update
-echo "---  Step 1: Updating System (Safe Update)... ---"
+# 1. System Update & Mirror Optimization
+echo "---  Step 1: Updating System & Optimizing Mirrors... ---"
 sudo pacman -Syu --noconfirm
+# Install reflector to automate the selection of the fastest/most up-to-date mirrors
+sudo pacman -S --needed --noconfirm reflector
+sudo reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 # 1.5. Core Documentation (Guaranteed Installation)
 echo "---  Step 1.5: Installing Core Documentation (man pages)... ---"
@@ -50,15 +42,10 @@ echo "[*] Installing Base & Dev tools..."
 sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose cmake
 
 # --- WEB SECURITY ---
-# sqlmap: Automatic SQL injection and database takeover tool
-# seclists: Essential collection of multiple types of lists used during security assessments
-# jq: Lightweight and flexible command-line JSON processor (crucial for bash automation)
-# burpsuite: Integrated platform for performing security testing of web applications
 echo "[*] Installing Web Security tools (Official Repos)..."
 sudo pacman -S --needed --noconfirm sqlmap seclists jq burpsuite
 
 # --- AUR PACKAGES (ffuf) ---
-# ffuf: Fast web fuzzer for directory discovery (Installed via AUR)
 echo "[*] Installing Web Security tools (AUR - ffuf)..."
 if ! command -v ffuf &> /dev/null; then
     echo "    Cloning and building ffuf from AUR..."
@@ -79,40 +66,22 @@ else
 fi
 
 # --- NETWORK SECURITY ---
-# nmap: Network exploration tool and security / port scanner
-# wireshark-qt: Network protocol analyzer
-# tcpdump: Command-line packet analyzer
-# bind: DNS utilities (contains 'dig' and 'host')
-# openbsd-netcat: The "Swiss army knife" for networking (nc)
 echo "[*] Installing Network Security tools..."
 sudo pacman -S --needed --noconfirm nmap wireshark-qt tcpdump bind openbsd-netcat
 
 # --- CRYPTOGRAPHY ---
-# john: John the Ripper (password cracker)
-# hashcat: Advanced password recovery utility
 echo "[*] Installing Cryptography tools..."
 sudo pacman -S --needed --noconfirm john hashcat
 
 # --- SOFTWARE SECURITY (Pwn & Reverse Engineering) ---
-# gdb: The GNU Debugger (essential for Binary Exploitation)
-# strace / ltrace: Trace system calls and library calls
-# radare2: Advanced command-line reverse engineering framework
-# binwalk: Tool for searching binary images for embedded files/signatures
 echo "[*] Installing Software Security tools..."
 sudo pacman -S --needed --noconfirm gdb strace ltrace radare2 binwalk
 
 # --- HARDWARE SECURITY ---
-# minicom: Serial communication program (used to interface with hardware via UART)
-# flashrom: Utility for reading/writing/verifying flash ROM chips
 echo "[*] Installing Hardware Security tools..."
 sudo pacman -S --needed --noconfirm minicom flashrom
 
-# --- CRYPTOGRAPHY PROTOCOLS ---
-# Usually analyzed theoretically or via custom Python scripts (pycryptodome).
-# Left empty for future custom additions. 
-
 # Setup Wireshark permissions
-# Add user to wireshark group to allow packet capturing without root
 echo "---  Configuring Wireshark Permissions... ---"
 sudo usermod -aG wireshark $USER
 
@@ -139,8 +108,6 @@ if [ ! -d "venv" ]; then
     echo -e "${GREEN}Virtual environment created.${NC}"
 fi
 
-# Install python modules inside the venv
-# Added arjun (HTTP parameter discovery) and dirsearch (Web path scanner)
 echo "---  Installing Python tools in venv... ---"
 ./venv/bin/pip install --upgrade pip
 ./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome arjun dirsearch
@@ -153,12 +120,7 @@ git config --global credential.helper store
 echo "---  Step 5: Cleaning Package Cache... ---"
 sudo pacman -Sc --noconfirm
 
-# ==============================================================================
-# --- CLEANUP ON SUCCESS ---
-# If the script successfully reaches this line, it means no errors occurred.
-# We delete the log file to keep the workspace clean.
 rm -f "$LOG_FILE"
-# ==============================================================================
 
 # 6. Final Success Message
 echo ""
@@ -168,7 +130,6 @@ echo -e "${GREEN}  ALL TOOLS INSTALLED SUCCESSFULLY.${NC}"
 echo -e "${GREEN}  GLHF (Good Luck Have Fun) & HAPPY HACKING! 💀${NC}"
 echo "----------------------------------------------------------------"
 
-# Show System Info
 fastfetch
 
 echo ""
