@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# ARCH LINUX AUTOMATION SETUP FOR CYBERCHALLENGE
+# ARCH LINUX AUTOMATION SETUP FOR CYBERCHALLENGE (V3 - BLACKARCH INTEGRATION)
 # ------------------------------------------------------------------------------
 # IDEMPOTENT SCRIPT: Safe to run multiple times.
 # STRICT MODE: The script will abort immediately if any command fails.
@@ -23,26 +23,41 @@ set -e
 
 echo "---  STARTING AUTOMATION: IDEMPOTENT SETUP ---"
 
-# 1. System Update & Mirror Optimization
-echo "---  Step 1: Updating System & Optimizing Mirrors... ---"
+# 1. System Update
+echo "---  Step 1: Updating System... ---"
 sudo pacman -Syu --noconfirm
-# Install reflector to automate the selection of the fastest/most up-to-date mirrors
-sudo pacman -S --needed --noconfirm reflector
-sudo reflector --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
-# 1.5. Core Documentation (Guaranteed Installation)
+# 1.5. Core Documentation
 echo "---  Step 1.5: Installing Core Documentation (man pages)... ---"
 sudo pacman -S --needed --noconfirm man-db man-pages
 
-# 2. Install Tools by CyberChallenge Macro-Categories
-echo "---  Step 2: Installing Tools by CTF Categories... ---"
-
 # --- BASE SYSTEM & DEV ---
-echo "[*] Installing Base & Dev tools..."
-sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose cmake
+# Note: Added 'curl' here because we need it to download the BlackArch script
+echo "[*] Installing Base & Dev tools (including curl)..."
+sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose cmake curl
+
+# 2. BlackArch Repository Setup
+# Check if BlackArch is already in pacman.conf. If not, install it.
+echo "---  Step 2: Configuring BlackArch Repository... ---"
+if ! grep -q "\[blackarch\]" /etc/pacman.conf; then
+    echo "    Downloading and executing BlackArch strap.sh..."
+    curl -O https://blackarch.org/strap.sh
+    chmod +x strap.sh
+    sudo ./strap.sh
+    # Update package databases to include BlackArch tools
+    sudo pacman -Syu --noconfirm
+    rm strap.sh
+    echo -e "${GREEN}    BlackArch repository configured successfully.${NC}"
+else
+    echo -e "${GREEN}    BlackArch repository is already configured. Skipping.${NC}"
+fi
+
+# 3. Install Tools by CyberChallenge Macro-Categories
+echo "---  Step 3: Installing Tools by CTF Categories... ---"
 
 # --- WEB SECURITY ---
-echo "[*] Installing Web Security tools (Official Repos)..."
+# Now seclists and burpsuite will be found thanks to BlackArch
+echo "[*] Installing Web Security tools (Official & BlackArch Repos)..."
 sudo pacman -S --needed --noconfirm sqlmap seclists jq burpsuite
 
 # --- AUR PACKAGES (ffuf) ---
@@ -102,7 +117,7 @@ if ! grep -q "LESS_TERMCAP_mb" ~/.bashrc; then
 fi
 
 # --- Virtual Environment Setup for Python CTF Tools ---
-echo "---  Step 3: Setting up Python Virtual Environment... ---"
+echo "---  Step 4: Setting up Python Virtual Environment... ---"
 if [ ! -d "venv" ]; then
     python -m venv venv
     echo -e "${GREEN}Virtual environment created.${NC}"
@@ -112,17 +127,17 @@ echo "---  Installing Python tools in venv... ---"
 ./venv/bin/pip install --upgrade pip
 ./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome arjun dirsearch
 
-# 4. Global Git Configuration
-echo "---  Step 4: Configuring Global Git Settings... ---"
+# 5. Global Git Configuration
+echo "---  Step 5: Configuring Global Git Settings... ---"
 git config --global credential.helper store
 
-# 5. Clean Cache
-echo "---  Step 5: Cleaning Package Cache... ---"
+# 6. Clean Cache
+echo "---  Step 6: Cleaning Package Cache... ---"
 sudo pacman -Sc --noconfirm
 
 rm -f "$LOG_FILE"
 
-# 6. Final Success Message
+# 7. Final Success Message
 echo ""
 echo "----------------------------------------------------------------"
 echo -e "${GREEN}  ACCESS GRANTED. SYSTEM READY.${NC}"
