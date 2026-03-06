@@ -135,3 +135,4 @@ Puoi cliccare su ogni file (style.css, script.js, ecc.) e vedere il loro contenu
 -> python Path/solve_web19.py
 
 20)Web 20 - SQLi 4: time-based SQL injection
+-> python path/solve_web20py
