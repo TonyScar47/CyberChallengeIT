@@ -1,0 +1,4 @@
+Quindi il tuo "schema" universale di iniezione è:
+}; TUO_PAYLOAD; //
+
+[Se è bloccato anche i commenti // allora scrivi questo if(1){ che funzionerà]
