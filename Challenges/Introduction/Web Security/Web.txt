@@ -97,3 +97,41 @@ echo "flag{$CONTENT}"
 [una volta che usi less, scrivi /flag che praticamente ti cerca tutta sta parola senza che stai a leggere ogni volta]
 
 15)Web 15 - Tecnologie web: risorse esterne
+Use Burp Suite!
+->Apri Burp Suite e avvia il browser integrato (Proxy -> Browser -> Open Browser).
+->Naviga all'URL della sfida: http://web-15.challs.olicyber.it/
+
+->Spostati nella tab Target -> Site Map.
+Sulla sinistra vedrai l'albero delle directory del sito. Burp organizza ordinatamente tutti i file individuati.
+Puoi cliccare su ogni file (style.css, script.js, ecc.) e vedere il loro contenuto nel pannello di destra.
+
+->Vai nella tab Proxy -> HTTP history.
+->Usa il filtro in alto (clicca sulla barra dei filtri)
+->Cerca la stringa flag
+
+16)Web 16 - Tecnologie web: un semplice spider
+->yay -S zaproxy
+->zaproxy &
+
+  [All'avvio ti apparirà una finestra che ti chiede "Do you want to persist the ZAP Session?".
+  Per le sfide CTF veloci come questa, seleziona "No, I do not want to persist this session at this moment" e 
+  clicca su Start.]
+
+->Una volta dentro, ti troverai nella schermata Quick Start (Avvio Rapido).
+->Clicca sul grande pulsante Automated Scan (Scansione Automatica).
+->Nel campo "URL to attack", incolla l'indirizzo della sfida
+->Lascia le impostazioni di default (Traditional spider) e clicca sul pulsante Attack!
+
+->Cerca la tab Search (Ricerca) in basso, accanto alla History. (Se non c'è, vai nel menu in alto View -> Show Tab -> Search).
+->Scrivi flag{ nella casella di ricerca e premi Invio.
+
+17)Web 17 - SQLi 1: logic SQL injection
+->foo' OR 1=1 -- -
+
+18)Web 18 - SQLi 2: UNION based SQL injection
+->' UNION SELECT flag, 2, 3, 4, 5, 6 FROM real_data -- -
+
+19)Web 19 - SQLi 3: blind SQL injection
+-> python Path/solve_web19.py
+
+20)Web 20 - SQLi 4: time-based SQL injection
