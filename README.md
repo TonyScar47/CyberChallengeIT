@@ -13,6 +13,16 @@ curl -s https://raw.githubusercontent.com/BadBoyEn/CyberChallenge-Tools/setup.sh
 ```
 ---
 
+### 💡 Troubleshooting Ping / DNS ### 
+
+1)ping -c 4 8.8.8.8
+
+2)ping -c 4 google.com
+->echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+->ping -c 4 google.com
+
+---
+
 ### 💡 Troubleshooting Git in VS Code
 
 If you encounter issues syncing from VS Code, follow these steps:
