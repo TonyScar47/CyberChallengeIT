@@ -72,5 +72,28 @@ curl normalmente non invierebbero, o che vuoi modificare manualmente]
  prova sia con PUT sia con PATCH a posto di options. PUO' ESSERE CJE SE FACESSO OPTIONS NON MI
  USCIREBBE IL METODO PUT O PATCH, TU FORZA LO STESSO. SCRIVI VEDI CHE SUCCEDE.]
 
- 11)Web 11 - HTTP: i token CSRF
- 
+11)Web 11 - HTTP: i token CSRF
+->python Challenges/Introduction/Web\ Security/solve_web11.py
+
+12)Web 12 - Tecnologie web: estrarre semplici contenuti da una pagina web
+->curl -s http://web-12.challs.olicyber.it/ | grep -oE "flag\{.*\}"
+
+  [Praticamente | dice che prende l'output di cio che sta prima e lo trasforma in input per la seconda parte; grep è
+  il filtro: -o sarebbe Only-Matching e -E sarebbe Extended Regexp che ti permette di usare i caratteri speciali.
+  Poi "flag" dice che deve cercare testuale, poi .* praticamente prende tutto da li in poi fino a quando non trova
+  la prentesi graffa di chiusura \}]
+
+13)Web 13 - Tecnologie web: estrarre elementi da una pagina web
+->curl -s http://web-13.challs.olicyber.it/ | grep -C 2 "span"
+
+# Sostituisci 'span.red' con quello che hai trovato nello Step 1
+ [Praticamente leggi il codice html e leggi la classe di span]
+->CONTENT=$(curl -s http://web-13.challs.olicyber.it/ | pup 'span.red text{}' | tr -d '\n')
+echo "flag{$CONTENT}"
+
+14)Web 14 - Tecnologie web: estrarre commenti da una pagina web
+->curl -s http://web-14.challs.olicyber.it/ | less
+->/flag
+[una volta che usi less, scrivi /flag che praticamente ti cerca tutta sta parola senza che stai a leggere ogni volta]
+
+15)Web 15 - Tecnologie web: risorse esterne

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# ARCH LINUX AUTOMATION SETUP FOR CYBERCHALLENGE (V3 - BLACKARCH INTEGRATION)
+# ARCH LINUX AUTOMATION SETUP FOR CYBERCHALLENGE (V4 - YAY & AUR INTEGRATION)
 # ------------------------------------------------------------------------------
 # IDEMPOTENT SCRIPT: Safe to run multiple times.
 # STRICT MODE: The script will abort immediately if any command fails.
@@ -32,19 +32,37 @@ echo "---  Step 1.5: Installing Core Documentation (man pages)... ---"
 sudo pacman -S --needed --noconfirm man-db man-pages
 
 # --- BASE SYSTEM & DEV ---
-# Note: Added 'curl' here because we need it to download the BlackArch script
-echo "[*] Installing Base & Dev tools (including curl)..."
+echo "[*] Installing Base & Dev tools..."
 sudo pacman -S --needed --noconfirm git base-devel code python python-pip fastfetch virtualbox-guest-utils docker-compose cmake curl
 
+# --- STEP 1.75: INSTALL YAY (AUR HELPER) ---
+# Added this step to manage AUR packages more efficiently during CTFs.
+# yay-bin is preferred to avoid long compilation times.
+echo "---  Step 1.75: Installing yay (AUR Helper)... ---"
+if ! command -v yay &> /dev/null; then
+    echo "[*] yay not found. Proceeding with manual installation from AUR..."
+    ORIGINAL_DIR=$(pwd)
+    BUILD_DIR=$(mktemp -d)
+    
+    cd "$BUILD_DIR"
+    git clone https://aur.archlinux.org/yay-bin.git
+    cd yay-bin
+    makepkg -si --noconfirm
+    
+    cd "$ORIGINAL_DIR"
+    rm -rf "$BUILD_DIR"
+    echo -e "${GREEN}    yay installed successfully.${NC}"
+else
+    echo -e "${GREEN}    yay is already present. Skipping manual build.${NC}"
+fi
+
 # 2. BlackArch Repository Setup
-# Check if BlackArch is already in pacman.conf. If not, install it.
 echo "---  Step 2: Configuring BlackArch Repository... ---"
 if ! grep -q "\[blackarch\]" /etc/pacman.conf; then
     echo "    Downloading and executing BlackArch strap.sh..."
     curl -O https://blackarch.org/strap.sh
     chmod +x strap.sh
     sudo ./strap.sh
-    # Update package databases to include BlackArch tools
     sudo pacman -Syu --noconfirm
     rm strap.sh
     echo -e "${GREEN}    BlackArch repository configured successfully.${NC}"
@@ -56,29 +74,14 @@ fi
 echo "---  Step 3: Installing Tools by CTF Categories... ---"
 
 # --- WEB SECURITY ---
-# Now seclists and burpsuite will be found thanks to BlackArch
-echo "[*] Installing Web Security tools (Official & BlackArch Repos)..."
-sudo pacman -S --needed --noconfirm sqlmap seclists jq burpsuite
+# Splitting between pacman (official/blackarch) and yay (AUR)
+echo "[*] Installing Web Security tools (Official & BlackArch)..."
+sudo pacman -S --needed --noconfirm sqlmap seclists jq burpsuite 
 
-# --- AUR PACKAGES (ffuf) ---
-echo "[*] Installing Web Security tools (AUR - ffuf)..."
-if ! command -v ffuf &> /dev/null; then
-    echo "    Cloning and building ffuf from AUR..."
-    ORIGINAL_DIR=$(pwd)
-    BUILD_DIR=$(mktemp -d)
-    cd "$BUILD_DIR"
-    
-    git clone https://aur.archlinux.org/ffuf-bin.git
-    cd ffuf-bin
-    
-    makepkg -si --noconfirm
-    
-    cd "$ORIGINAL_DIR"
-    rm -rf "$BUILD_DIR"
-    echo -e "${GREEN}    ffuf installed successfully.${NC}"
-else
-    echo -e "${GREEN}    ffuf is already installed. Skipping.${NC}"
-fi
+# --- AUR TOOLS (ffuf & pup) ---
+# Using yay for tools that often fail or are missing in standard repos.
+echo "[*] Installing AUR-specific tools via yay..."
+yay -S --needed --noconfirm ffuf-bin pup-bin
 
 # --- NETWORK SECURITY ---
 echo "[*] Installing Network Security tools..."
@@ -125,7 +128,7 @@ fi
 
 echo "---  Installing Python tools in venv... ---"
 ./venv/bin/pip install --upgrade pip
-./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome arjun dirsearch
+./venv/bin/pip install exrex rstr requests scapy pwntools pycryptodome arjun dirsearch beautifulsoup4
 
 # 5. Global Git Configuration
 echo "---  Step 5: Configuring Global Git Settings... ---"
@@ -149,5 +152,4 @@ fastfetch
 
 echo ""
 echo " PYTHON VENV REMINDER:"
-echo "To use your tools (like pwntools, arjun, dirsearch), run: source venv/bin/activate"
-echo "then run: deactivate"
+echo "To use your tools (like pwntools, arjun, bs4), run: source venv/bin/activate"
