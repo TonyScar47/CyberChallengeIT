@@ -75,7 +75,7 @@ echo "[*] Installing Base & Dev tools..."
 sudo pacman -S --needed --noconfirm \
 git base-devel code python python-pip fastfetch \
 virtualbox-guest-utils docker docker-compose \
-cmake curl tmux
+cmake curl tmux zip unzip
 
 # ------------------------------------------------------------------------------
 # DOCKER FULL SETUP

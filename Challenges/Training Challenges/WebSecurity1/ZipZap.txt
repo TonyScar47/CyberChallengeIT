@@ -1,0 +1,4 @@
+ZipZap 1:
+->Crea una cartella temporanea: mkdir prova && cd prova
+->Crea un file normale: touch flag.txt
+->Comprimilo dandogli un nome "falso" all'interno dello zip:
