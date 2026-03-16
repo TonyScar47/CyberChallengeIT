@@ -64,9 +64,9 @@ echo -e "${GREEN}[*] Installing Tools...${NC}"
 ALL_TOOLS=(
     git base-devel code python python-pip fastfetch 
     virtualbox-guest-utils docker docker-compose cmake curl tmux zip unzip
-    man-db man-pages sqlmap seclists jq burpsuite nmap 
+    man-db man-pages sqlmap seclists jq burpsuite nmap ngrok
     wireshark-qt tcpdump bind john hashcat gdb strace 
-    ltrace radare2 binwalk minicom flashrom
+    ltrace radare2 binwalk minicom flashrom php
 )
 sudo pacman -S --needed --noconfirm "${ALL_TOOLS[@]}"
 
@@ -102,8 +102,15 @@ fi
 sudo pacman -Sc --noconfirm
 
 # ------------------------------------------------------------------------------
-# STEP 5: SUCCESSFUL CLEANUP
+# STEP 5: SUCCESSFUL CLEANUP & POST-INSTALL REMINDERS
 # ------------------------------------------------------------------------------
+echo -e "\n${BLUE}============================================================${NC}"
+echo -e "${GREEN}[!] POST-INSTALLATION NOTES:${NC}"
+echo -e "1. NGROK: Dopo aver installato ngrok, dovete inserire la vostra"
+echo -e "   chiave di autenticazione per usarlo. Eseguite:"
+echo -e "   ${RED}ngrok config add-authtoken <LA_TUA_CHIAVE>${NC}"
+echo -e "${BLUE}============================================================${NC}\n"
+
 echo -e "\n${GREEN}DONE. NO MORE TIMEOUTS. HAPPY HACKING! 💀${NC}\n"
 
 # Remove error log as everything went according to plan
