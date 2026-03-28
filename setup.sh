@@ -66,7 +66,7 @@ ALL_TOOLS=(
     virtualbox-guest-utils docker docker-compose cmake curl tmux zip unzip
     man-db man-pages sqlmap seclists jq burpsuite nmap ngrok
     wireshark-qt tcpdump bind john hashcat gdb strace 
-    ltrace radare2 binwalk minicom flashrom php
+    ltrace radare2 binwalk minicom flashrom php words
 )
 sudo pacman -S --needed --noconfirm "${ALL_TOOLS[@]}"
 
