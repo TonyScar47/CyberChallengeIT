@@ -62,9 +62,9 @@ sudo pacman -Syu --noconfirm
 # ------------------------------------------------------------------------------
 echo -e "${GREEN}[*] Installing Tools...${NC}"
 ALL_TOOLS=(
-    git base-devel code python python-pip fastfetch 
+    git base-devel python python-pip fastfetch 
     virtualbox-guest-utils docker docker-compose cmake curl tmux zip unzip
-    man-db man-pages sqlmap seclists jq burpsuite nmap ngrok
+    man-db man-pages sqlmap seclists jq burpsuite nmap ngrok visual-studio-code-bin
     wireshark-qt tcpdump bind john hashcat gdb strace 
     ltrace radare2 binwalk minicom flashrom php words
 )
