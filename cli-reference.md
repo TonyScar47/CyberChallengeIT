@@ -13,7 +13,7 @@
 6. [🔐 Permissions & User Management](#-permissions--user-management)
 7. [📊 System Monitoring & Information](#-system-monitoring--information)
 8. [🐳 Docker Fundamentals](#-docker-fundamentals)
-9. [📦 Package Management](#-package-management)
+9. [📦 Package Management & Archiving](#-package-management--archiving)
 10. [🌐 Networking & Remote Access](#-networking--remote-access)
 11. [🛡️ Security & Scanning Utilities](#-security--scanning-utilities)
 12. [🔨 Compilation & Countermeasures](#-compilation--countermeasures-bypassing-protections)
