@@ -9,13 +9,13 @@
 2. [📂 File & Directory Management](#-file--directory-management)
 3. [📝 Text Editors](#-text-editors)
 4. [📦 Archiving & Automation](#-archiving--automation)
-5. [🛠️ Integrity & Hashing](#integrity--hashing)
+5. [🛠️ Integrity & Hashing](#integrityhashing)
 6. [🔐 Permissions & User Management](#-permissions--user-management)
 7. [📊 System Monitoring & Information](#-system-monitoring--information)
 8. [🐳 Docker Fundamentals](#-docker-fundamentals)
 9. [📦 Package Management & Archiving](#-package-management--archiving)
 10. [🌐 Networking & Remote Access](#-networking--remote-access)
-11. [🛡️ Security & Scanning Utilities](#security--scanning-utilities)
+11. [🛡️ Security & Scanning Utilities](#securityscanning)
 12. [🔨 Compilation & Countermeasures](#-compilation--countermeasures-bypassing-protections)
 13. [🔍 Binary Analysis & Symbol Lookup](#-binary-analysis--symbol-lookup)
 14. [💀 Advanced Debugging & Exploitation (Pwn)](#-advanced-debugging--exploitation-pwn)
@@ -73,7 +73,7 @@
 
 ---
 
-### 🛠️ Integrity & Hashing
+### 🛠️ Integrity & Hashing <a name="integrityhashing"></a>
 * `sha256sum <file>` - Generate or check SHA256 hashes to ensure file integrity.
 * `md5sum <file>` - Generate or check MD5 hashes (legacy/fast check).
 * `sha256sum -c checksum.txt` - Verify files against a list of stored hashes.
@@ -141,7 +141,7 @@
 
 ---
 
-### 🛡️ Security & Scanning Utilities
+### 🛡️ Security & Scanning Utilities <a name="securityscanning"></a>
 * `nmap -sV target` - Scan target for open ports and services.
 * `tcpdump -i eth0` - Capture and analyze network packets.
 * `whois domain.com` - Look up domain registration information.
