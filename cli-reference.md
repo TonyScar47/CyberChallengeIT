@@ -9,7 +9,7 @@
 2. [📂 File & Directory Management](#-file--directory-management)
 3. [📝 Text Editors](#-text-editors)
 4. [📦 Archiving & Automation](#-archiving--automation)
-5. [🛠️ Integrity & Hashing](#integrity--hashing)
+5. [🛠️ Integrity & Hashing](#-integrity--hashing)
 6. [🔐 Permissions & User Management](#-permissions--user-management)
 7. [📊 System Monitoring & Information](#-system-monitoring--information)
 8. [🐳 Docker Fundamentals](#-docker-fundamentals)
