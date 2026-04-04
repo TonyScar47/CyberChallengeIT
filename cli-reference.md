@@ -51,6 +51,8 @@
 * `rm file.txt` - Delete a file.
 * `ln -s <path> <link>` - Create a symbolic link (shortcut).
 * `strings <file>` - Extract printable strings (useful for finding flags in binaries).
+* `grep -ri "text" <dir>` - Search for a text string recursively, ignoring case (essential for finding flags).
+* `base64 file.txt / base64 -d file.txt` - Encode or decode file content using Base64.
 
 ---
 
@@ -146,6 +148,7 @@
 * `tcpdump -i eth0` - Capture and analyze network packets.
 * `whois domain.com` - Look up domain registration information.
 * `dig domain.com` - Perform DNS lookups.
+* `sqlmap -u "<URL>"` - Automated tool for detecting and exploiting SQL Injection vulnerabilities.
 
 ---
 
@@ -163,6 +166,7 @@
 * `nm -D <binary>` - List dynamic symbols (exported functions).
 * `readelf -s <library.so> | grep <function>` - Find function offsets in shared libraries (e.g., `system` in `libc`).
 * `ldd <binary>` - Show shared library dependencies and their current memory addresses.
+* `objdump -d -M intel <binary>` - Disassemble executable sections of a binary using Intel syntax.
 
 ---
 
