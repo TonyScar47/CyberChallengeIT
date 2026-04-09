@@ -2,6 +2,10 @@
 
 Ambiente portatile per Cyberchallenge
 
+**[UNDER COSTRUCTION, quindi puo' essere che alcune cose non funzionano & le pagine scritte alla cazzo di cane.]**
+
+# **LET ME COOK**
+
 ### 🚀 Quick Start
 To set up the environment on a new machine, simply run:
 
