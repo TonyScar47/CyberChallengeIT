@@ -2,10 +2,6 @@
 
 # ==============================================================================
 # ARCH LINUX AUTOMATION SETUP FOR CYBERCHALLENGE (V9.1 - WITH CLEANUP)
-# ------------------------------------------------------------------------------
-# FIX: Removed mirror rating to eliminate Reflector timeouts.
-# STRATEGY: Grab latest mirrors by sync status, not by speed test.
-# CLEANUP: Deletes setup_error.log only on successful execution.
 # ==============================================================================
 
 GREEN='\033[0;32m'
@@ -64,7 +60,7 @@ echo -e "${GREEN}[*] Installing Tools...${NC}"
 ALL_TOOLS=(
     git base-devel python python-pip fastfetch 
     virtualbox-guest-utils docker docker-compose cmake curl tmux zip unzip
-    man-db man-pages sqlmap seclists jq burpsuite nmap ngrok visual-studio-code-bin
+    man-db man-pages sqlmap jq nmap firefox
     wireshark-qt tcpdump bind john hashcat gdb strace 
     ltrace radare2 binwalk minicom flashrom php words
 )
@@ -86,6 +82,10 @@ if ! grep -q "\[blackarch\]" /etc/pacman.conf; then
     rm strap.sh
     sudo pacman -Sy
 fi
+
+echo -e "${GREEN}[*] Installing BlackArch and AUR Tools...${NC}"
+sudo pacman -S --needed --noconfirm seclists burpsuite
+yay -S --needed --noconfirm ngrok visual-studio-code-bin
 
 # ------------------------------------------------------------------------------
 # STEP 4: VENV & FINAL CONFIG
@@ -113,5 +113,4 @@ echo -e "${BLUE}============================================================${NC
 
 echo -e "\n${GREEN}DONE. NO MORE TIMEOUTS. HAPPY HACKING! 💀${NC}\n"
 
-# Remove error log as everything went according to plan
 rm -f "$LOG_FILE"
