@@ -4,9 +4,10 @@ Ambiente portatile per Cyberchallenge
 
 ### 🚀 Quick Start
 To set up the environment on a new machine, simply run:
-```bash
-git clone https://github.com/TonyScar47/CyberChallengeIT.git
 
+```bash
+sudo pacman -S git
+git clone https://github.com/TonyScar47/CyberChallengeIT.git
 ```
 ---
 
