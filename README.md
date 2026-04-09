@@ -5,7 +5,7 @@ Ambiente portatile per Cyberchallenge
 ### 🚀 Quick Start
 To set up the environment on a new machine, simply run:
 ```bash
-curl -s https://raw.githubusercontent.com/TonyScar47/CyberChallengeIT/setup.sh | sudo bash
+git clone https://github.com/TonyScar47/CyberChallengeIT.git
 
 ```
 ---
