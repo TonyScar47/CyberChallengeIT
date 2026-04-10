@@ -27,7 +27,7 @@ Appena viene dato il via alla gara, la prima cosa è stabilire e verificare la c
 - **Testare la raggiungibilità del Game Server:**
   
   ```bash
-  ping 10.60.5.1
+  ping 10.10.0.1
   ```
 
 ## 🔑 Fase 1: Accesso e Persistenza
