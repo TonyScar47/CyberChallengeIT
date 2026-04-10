@@ -5,6 +5,12 @@ Questo documento contiene i passaggi fondamentali da eseguire nei primi 15-30 mi
 ## 🟢 Fase 0: Connessione e Setup Rete
 Appena viene dato il via alla gara, la prima cosa è stabilire e verificare la connessione alla VPN.
 
+- **Avere wireguard:**
+
+  ```bash
+  sudo pacman -S wireguard-tools    #!ArchLinux
+  ```
+
 - **Avviare la VPN:**
   
   ```bash
@@ -65,17 +71,17 @@ Prima di toccare *qualsiasi* cosa, fai un backup dei servizi vergini. Se "rompi"
   docker ps
   ```
   
-- **Backup dei servizi vergini:**
+- **Backup dei servizi vergini (zipparli):**
   
   ```bash
   # Identifica la cartella dove si trovano i sorgenti dei servizi (es. /opt, /var/www, ecc.)
-  tar -czvf /root/backup_servizi_vergini.tar.gz /percorso/sorgenti/servizi
+  zip -r services.zip nomeservizio1/ nomeserviz2/ nomeservizio3/
   ```
   
-- **Scaricare i sorgenti in locale (sul tuo PC Arch):**
-  
+- **Copia in locale lo zip:**
+
   ```bash
-  scp root@<Indirizzo_IP_Ufficiale_VulnBox>:/root/backup_servizi_vergini.tar.gz .
+  scp root@10.60.x.1:services.zip . #il punto indica la directory dove esegui il comando
   ```
 
 ## Exploit Template
