@@ -126,3 +126,49 @@ if __name__ == "__main__":
 ## Digger
 
 [work in progress]
+
+## 🔍 Regex Cheat Sheet per CTF & Digger
+
+In Markdown, usa i blocchi di codice per mantenere la formattazione pulita. Ricorda che i caratteri speciali vanno "scappati" con il backslash `\`.
+
+### 1. Caratteri Base e "Escaping"
+* `\.` : Corrisponde a un **punto letterale**.
+    * *Esempio:* `10\.60\.5\.1` trova esattamente l'IP `10.60.5.1`.
+* `\d` : Qualsiasi **cifra** numerica (0-9).
+    * *Esempio:* `user_\d\d` trova `user_01`, `user_42`.
+* `\w` : Qualsiasi carattere **alfanumerico** (lettere, numeri, underscore).
+    * *Esempio:* `\w+` trova `admin`, `flag_123`, `root`.
+* `\s` : **Spazio vuoto** (tab, spazio, invio).
+    * *Esempio:* `password:\s\w+` trova `password: segreta`.
+* `^` : **Inizio** della riga.
+    * *Esempio:* `^CCIT` trova solo se la riga inizia con CCIT.
+* `$` : **Fine** della riga.
+    * *Esempio:* `\}$` trova solo se la riga finisce con una parentesi graffa.
+
+### 2. Quantificatori (Quante volte?)
+* `*` : **Zero o più** volte.
+    * *Esempio:* `error*` trova `erro`, `error`, `errorrr`.
+* `+` : **Una o più** volte.
+    * *Esempio:* `\d+` trova `7`, `123`, `9999` (almeno un numero).
+* `?` : **Zero o una** volta (rende l'elemento opzionale).
+    * *Esempio:* `https?` trova sia `http` che `https`.
+* `{n}` : **Esattamente n** volte.
+    * *Esempio:* `\d{4}` trova `2024`, ma non `202`.
+
+### 3. Gruppi e Alternanze
+* `[abc]` : Uno qualsiasi dei caratteri tra parentesi.
+    * *Esempio:* `[Rr]oot` trova sia `Root` che `root`.
+* `[a-z]` : Qualsiasi lettera minuscola in un intervallo.
+    * *Esempio:* `id_[0-9]` trova `id_5`.
+* `(abc)` : **Gruppo di cattura**.
+    * *Esempio:* `Flag: (.*)` permette di estrarre solo quello che viene dopo "Flag: ".
+* `a|b` : "a" **oppure** "b" (OR logico).
+    * [cite_start]*Esempio:* `GET|POST` trova i due principali metodi HTTP. [cite: 5]
+
+### 4. Esempi Pratici per la Gara
+* **Trovare una Flag standard:** `CCIT\{[A-Za-z0-9_]+\}`
+    * *Match:* `CCIT{p4tch_th3_vunl_123}`
+* **Filtrare Indirizzi IP:** `\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`
+    * [cite_start]*Match:* `192.168.100.100` [cite: 29]
+* **Trovare commenti sensibili nel codice:** `` o `//.*`
+    * [cite_start]*Match:* `// TODO: fix this vulnerability` [cite: 44]
