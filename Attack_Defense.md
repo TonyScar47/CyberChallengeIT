@@ -37,7 +37,7 @@ Evitare di inserire la password decine di volte ti farà risparmiare tempo prezi
   
   ```bash
   ssh-keygen
-  ssh-copyid root@10.60.x.1    #inserisci la password
+  ssh-copyid root@10.60.x.1    #inserisci la password della VM
   ```
   
 - **Accedere alla VulnBox (Terminale di Gara):**
