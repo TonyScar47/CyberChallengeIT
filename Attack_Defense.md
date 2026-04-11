@@ -139,20 +139,19 @@ git clone https://github.com/Pwnzer0tt1/digger
 
 Poi entra nella directory ed esegui:
 
-```bash
-docker 
-```
 
 ```bash
 ./start.py start --mode-c \
-  --target-ip 10.60.0.1 \
+  --target-ip 10.60.x.1 \
   --date "1970-01-01T10:00+02:00" \
   --tick-length 120 \
   --refresh-rate 30 \
   --key ed25519
 ```
 
-Vai su localhost:8000
+Vai su localhost:8000 (per chi lo sta hostando)
+(chi si vuole aggregare, deve chiedere a chi hosta di fare show ip, andare su "player_x" e poi vedere l'ip
+ Poi apri il browser e metti l'ip di chi hosta:8000)
 
 ## Firegex
 
