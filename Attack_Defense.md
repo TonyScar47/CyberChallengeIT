@@ -43,7 +43,7 @@ Evitare di inserire la password decine di volte ti farà risparmiare tempo prezi
 - **Accedere alla VulnBox (Terminale di Gara):**
       
   ```bash
-  ssh root@<Indirizzo_IP_Ufficiale_VulnBox>
+  ssh root@<Indirizzo_IP_Ufficiale_VulnBox>    #E poi fai tasto invio 3 volte
   ```
   
 - **Autorizzare la propria chiave SSH sulla VulnBox:**
