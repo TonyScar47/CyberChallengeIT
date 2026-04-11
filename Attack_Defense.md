@@ -37,7 +37,7 @@ Evitare di inserire la password decine di volte ti farà risparmiare tempo prezi
   
   ```bash
   ssh-keygen
-  ssh-copyid root@10.60.x.1    #inserisci la password della VM
+  ssh-copy-id -i Inserisci_Path root@10.60.x.1    #inserisci la password della VM
   ```
   
 - **Accedere alla VulnBox (Terminale di Gara):**
@@ -131,7 +131,38 @@ if __name__ == "__main__":
 
 ## Digger
 
-[work in progress]
+Clonare la repo di git:
+
+```bash
+git clone https://github.com/Pwnzer0tt1/digger
+```
+
+Poi entra nella directory ed esegui:
+
+```bash
+docker 
+```
+
+```bash
+./start.py start --mode-c \
+  --target-ip 10.60.0.1 \
+  --date "1970-01-01T10:00+02:00" \
+  --tick-length 120 \
+  --refresh-rate 30 \
+  --key ed25519
+```
+
+Vai su localhost:8000
+
+## Firegex
+
+```bash
+sh <(curl -sLf https://pwnzer0tt1.it/firegex.sh)      #Dentro la vulnbox
+```
+
+E poi vai sul sito 10.60.x.1:4444 e inserisci la password che avevi impostato prima nel comando
+
+Ora per usarlo, crea un servizio con nome servizio, indirizzo ip del servizio e la porta associata. E poi inserisci le regex che vuoi
 
 ## 🔍 Regex Cheat Sheet per CTF & Digger
 
