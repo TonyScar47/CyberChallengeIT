@@ -85,6 +85,13 @@ Prima di toccare *qualsiasi* cosa, fai un backup dei servizi vergini. Se "rompi"
   #x.x.x.x e' l'ip della gara che ti danno; backup.zip devi vedere come sta chiamato facendo ls sul terminale di gara
   ```
 
+- **Poi entra nella cartella dove sta lo zip e fai sto comando:**
+
+  ```bash
+  unzip nomeFile.zip #aspetta che unzippi tutto e fai poi
+  ls  #e niente apriti il servizio con vscode o vim
+  ```
+
 ## Exploit Template
 
 ```python
