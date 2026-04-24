@@ -78,10 +78,11 @@ Prima di toccare *qualsiasi* cosa, fai un backup dei servizi vergini. Se "rompi"
   zip -r services.zip nomeservizio1/ nomeserviz2/ nomeservizio3/
   ```
   
-- **Copia in locale lo zip:**
+- **Copia in locale lo zip su un nuovo terminale, vai con cd nella cartella di destinazione e metti sto comando:**
 
   ```bash
-  scp root@10.60.x.1:services.zip . #il punto indica la directory dove esegui il comando
+  scp root@x.x.x.x:backup.zip . #il punto indica la directory dove esegui il comando
+  #x.x.x.x e' l'ip della gara che ti danno; backup.zip devi vedere come sta chiamato facendo ls sul terminale di gara
   ```
 
 ## Exploit Template
