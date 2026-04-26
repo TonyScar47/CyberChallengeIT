@@ -2,6 +2,9 @@
 
 Questo documento contiene i passaggi fondamentali da eseguire nei primi 15-30 minuti di una gara Attack/Defense.
 
+https://regex101.com/
+https://gchq.github.io/CyberChef/
+
 ## 🟢 Fase 0: Connessione e Setup Rete
 Appena viene dato il via alla gara, la prima cosa è stabilire e verificare la connessione alla VPN.
 
@@ -158,6 +161,7 @@ Poi entra nella directory ed esegui:
 ```
 
 Vai su localhost:8000 (per chi lo sta hostando)
+
 (chi si vuole aggregare, deve chiedere a chi hosta di fare show ip, andare su "player_x" e poi vedere l'ip
  Poi apri il browser e metti l'ip di chi hosta:8000)
 
@@ -174,6 +178,8 @@ Ora per usarlo, crea un servizio con nome servizio, indirizzo ip del servizio e 
 ## 🔍 Regex Cheat Sheet per CTF & Digger
 
 In Markdown, usa i blocchi di codice per mantenere la formattazione pulita. Ricorda che i caratteri speciali vanno "scappati" con il backslash `\`.
+
+https://regex101.com/
 
 ### 1. Caratteri Base e "Escaping"
 * `\.` : Corrisponde a un **punto letterale**.
